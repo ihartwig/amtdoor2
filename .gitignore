@@ -1,3 +1,14 @@
 # eagle backups
 *\#*
 *.zip
+
+# extra c compiler files
+*.bin
+*.d
+*.eep
+*.elf
+*.hex
+*.lss
+*.map
+*.o
+*.sym

@@ -33,7 +33,7 @@
   // #define LEDMASK_USB_ERROR        (LEDS_LED1 | LEDS_LED3)
 
   /* Function Prototypes: */
-  void SetupHardware(void);
+  void setupHardware(void);
 
   void EVENT_USB_Device_Connect(void);
   void EVENT_USB_Device_Disconnect(void);

@@ -36,6 +36,7 @@ USB_ClassInfo_CDC_Device_t VirtualSerial_CDC_Interface =
  *  used like any regular character stream in the C APIs.
  */
 static FILE USBSerialStream;
+char USBSerialBuffer[256];
 
 
 int main (void) {
@@ -56,8 +57,21 @@ int main (void) {
     // _delay_ms(500);
 
     /* Must throw away unused bytes from the host, or it will lock up while waiting for the device */
-    CDC_Device_ReceiveByte(&VirtualSerial_CDC_Interface);
+    // CDC_Device_ReceiveByte(&VirtualSerial_CDC_Interface);
 
+    // echo string
+    uint16_t numBytes = CDC_Device_BytesReceived(&VirtualSerial_CDC_Interface);
+    if(numBytes > 0) {
+      fgets(&USBSerialBuffer, 256, &USBSerialStream);
+      fputs(&USBSerialBuffer, &USBSerialStream);
+    }
+
+    /* Echo all received data on the second CDC interface */
+    // int16_t ReceivedByte = CDC_Device_ReceiveByte(&VirtualSerial_CDC_Interface);
+    // if (!(ReceivedByte < 0))
+    //   CDC_Device_SendByte(&VirtualSerial_CDC_Interface, (uint8_t)ReceivedByte);
+
+    // call maintenance functions
     CDC_Device_USBTask(&VirtualSerial_CDC_Interface);
     USB_USBTask();
   }

@@ -32,11 +32,11 @@ USB_ClassInfo_CDC_Device_t VirtualSerial_CDC_Interface =
   };
 
 
-/** Standard file stream for the CDC interface when set up, so that the virtual CDC COM port can be
- *  used like any regular character stream in the C APIs.
- */
+// standard file streams for the serial ios
 static FILE USBSerialStream;
-char USBSerialBuffer[256];
+static FILE HWSerialStream;
+char USBSerialBuffer[128];
+char HWSerialBuffer[128];
 
 
 int main (void) {
@@ -44,6 +44,7 @@ int main (void) {
 
   /* Create a regular character stream for the interface so that it can be used with the stdio.h functions */
   CDC_Device_CreateStream(&VirtualSerial_CDC_Interface, &USBSerialStream);
+  Serial_CreateStream(&HWSerialStream);
 
   GlobalInterruptEnable();
 
@@ -62,8 +63,16 @@ int main (void) {
     // echo string
     uint16_t numBytes = CDC_Device_BytesReceived(&VirtualSerial_CDC_Interface);
     if(numBytes > 0) {
-      fgets(&USBSerialBuffer, 256, &USBSerialStream);
+      fgets(&USBSerialBuffer, 128, &USBSerialStream);
       fputs(&USBSerialBuffer, &USBSerialStream);
+    }
+
+    // check for new data from RFID card reader
+    bool newBytes = Serial_IsCharReceived();
+    if(newBytes) {
+      fgets(&HWSerialBuffer, 128, &HWSerialStream);
+      fputs(&HWSerialBuffer, &USBSerialStream);
+      fputs("\r\n", &USBSerialStream);
     }
 
     /* Echo all received data on the second CDC interface */
@@ -87,6 +96,10 @@ void setupHardware(void) {
   /* Disable clock division */
   clock_prescale_set(clock_div_1);
 
+  // start hw serial
+  Serial_Init(2400, false);
+
+  // start virtual serial
   USB_Init();
 }
 

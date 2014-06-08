@@ -28,9 +28,22 @@
 #define RFIDEN_PIN  PIND
 #define RFIDEN_PINN 7
 
+#define DOOROPEN_DDR  DDRD
+#define DOOROPEN_PORT PORTD
+#define DOOROPEN_PIN  PIND
+#define DOOROPEN_PINN 5
+
+#define DOORCLOSE_DDR  DDRD
+#define DOORCLOSE_PORT PORTD
+#define DOORCLOSE_PIN  PIND
+#define DOORCLOSE_PINN 6
+
 #define CHAR_BUFFER_SIZE 128
 #define TAG_LENGTH 10
 #define RFID_UART_BAUD 2400
+
+#define DOOR_CLOSE_PULSE_TIME 10000
+#define DOOR_OPEN_TIME 10000
 
 
 /* Data Structures */
@@ -52,6 +65,10 @@ typedef enum device_state_t {
 bool readOrDumpBuffer(char new_char, char_buffer_t *buffer);
 void setupHardware(void);
 void initSystemTime(void);
+void doorOpen(void);
+void doorClose(void);
+// void RFIDEnable(void);
+// void RFIDDisable(void);
 
 void EVENT_USB_Device_Connect(void);
 void EVENT_USB_Device_Disconnect(void);

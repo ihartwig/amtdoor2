@@ -42,7 +42,9 @@ static FILE USBSerialStream;
 /* Global Data */
 char_buffer_t command_buffer;
 char_buffer_t tag_buffer;
-
+device_state_t device_state;
+volatile uint16_t system_timer; // 1ms resolution, loops at 2^16=65536ms
+uint16_t last_system_timer;
 
 int main (void) {
   initBuffer(&command_buffer);
@@ -59,18 +61,49 @@ int main (void) {
   LEDDDR = _BV(LEDPINN); //set up pin 0 on port B
   LEDPORT |= _BV(LEDPINN);
 
+  RFIDEN_DDR = _BV(RFIDEN_PINN); // pull RFID enable pin low
+  RFIDEN_PORT &= ~_BV(RFIDEN_PINN);
+
+
+  DDRD |= _BV(6);
+  last_system_timer = 0;
+
   while (1) {
     // PORTE |= _BV(6); //set pin 0 on port B high
     // _delay_ms(500);
     // PORTE &= ~_BV(6); //set pin 0 on port B low
     // _delay_ms(500);
 
+    if(system_timer + 1000 >= last_system_timer) {
+      fprintf(&USBSerialStream, "timer: %dms\n", system_timer);
+      if(system_timer < 60000) {
+        last_system_timer += 1000;
+      } else {
+        system_timer = 0;
+        last_system_timer = 0;
+      }
+    }
+
     // echo command string
+    // while(CDC_Device_BytesReceived(&VirtualSerial_CDC_Interface) > 0) {
+    //   if(readOrDumpBuffer(
+    //        (char)CDC_Device_ReceiveByte(&VirtualSerial_CDC_Interface),
+    //        &command_buffer)) {
+    //     fputs(&command_buffer, &USBSerialStream);
+    //   }
+    // }
+
+    // process any incommming serial commands
     while(CDC_Device_BytesReceived(&VirtualSerial_CDC_Interface) > 0) {
       if(readOrDumpBuffer(
            (char)CDC_Device_ReceiveByte(&VirtualSerial_CDC_Interface),
            &command_buffer)) {
-        fputs(&command_buffer, &USBSerialStream);
+        if(strcmp("D", &command_buffer)) {
+          // open door
+
+        }
+
+        // no other commands implemented here
       }
     }
 
@@ -139,11 +172,31 @@ void setupHardware(void) {
   /* Disable clock division */
   clock_prescale_set(clock_div_1);
 
+  initSystemTime();
+
   // start hw serial
   Serial_Init(RFID_UART_BAUD, false);
 
   // start virtual serial
   USB_Init();
+}
+
+
+/**
+Configure TIMER0 to raise an interrupt every 1ms and increment the system_time
+variable.
+**/
+void initSystemTime() {
+  // F_CPU = 16000000
+  // F_Timer1 = 16000000/64 = 250000
+  // 1ms @ 250000 hz = 250
+  // configure TIMER0 to raise an interrupt every 1ms
+
+  // set timer for no scaling Fovr = 16000000/256 = 62500Hz, CTC Mode
+  TCCR0A |= _BV(WGM01);
+  TCCR0B |= _BV(CS01) | _BV(CS00);
+  TIMSK0 |= _BV(OCIE0A);
+  OCR0A = 250;
 }
 
 
@@ -176,4 +229,12 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 void EVENT_USB_Device_ControlRequest(void)
 {
   CDC_Device_ProcessControlRequest(&VirtualSerial_CDC_Interface);
+}
+
+
+ISR(TIMER0_COMPA_vect) {
+  // figure out when the next compare should happen by doing a sine table lookup
+  PORTD |= _BV(6);
+  system_timer++;
+  PORTD &= ~_BV(6);
 }

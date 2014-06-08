@@ -1,8 +1,10 @@
 #include "main.h"
-
-
-
-
+/**
+ * IDLE (non blocking) -> Wait for new serial data ->
+ * VERIFYING (non blocking) -> Should get a door command? ->
+ * OPEN (blocking) -> Open relay, disable reader, set 10s timer.
+ * When in other states, pulse close signal every 10s.
+ **/
 
 /** LUFA CDC Class driver interface configuration and state information. This structure is
  *  passed to all CDC Class driver functions, so that multiple instances of the same class
@@ -58,30 +60,36 @@ int main (void) {
 
   GlobalInterruptEnable();
 
-  LEDDDR = _BV(LEDPINN); //set up pin 0 on port B
-  LEDPORT |= _BV(LEDPINN);
+  // start state machine
+  device_state = IDLE;
 
-  RFIDEN_DDR = _BV(RFIDEN_PINN); // pull RFID enable pin low
-  RFIDEN_PORT &= ~_BV(RFIDEN_PINN);
-
-
+  // debug init
   DDRD |= _BV(6);
   last_system_timer = 0;
 
   while (1) {
-    // PORTE |= _BV(6); //set pin 0 on port B high
-    // _delay_ms(500);
-    // PORTE &= ~_BV(6); //set pin 0 on port B low
-    // _delay_ms(500);
 
-    if(system_timer + 1000 >= last_system_timer) {
-      fprintf(&USBSerialStream, "timer: %dms\n", system_timer);
-      if(system_timer < 60000) {
-        last_system_timer += 1000;
-      } else {
-        system_timer = 0;
-        last_system_timer = 0;
-      }
+    // debug
+    // if(system_timer < 1000) {
+    //   last_system_timer = 0;
+    // }
+    // if(system_timer + 1000 >= last_system_timer) {
+    //   fprintf(&USBSerialStream, "state: %d, timer: %dms\r\n", (int)device_state, system_timer);
+    //   if(system_timer < 60000) {
+    //     last_system_timer += 1000;
+    //   } else {
+    //     system_timer = 0;
+    //   }
+    // }
+
+    // periodically send a close door pulse in idle
+    if(device_state == IDLE && system_timer >= DOOR_CLOSE_PULSE_TIME) {
+      doorClose();
+    }
+
+    // after open timeout, go back to idle state
+    if(device_state == OPEN && system_timer >= DOOR_OPEN_TIME) {
+      doorClose();
     }
 
     // echo command string
@@ -94,16 +102,35 @@ int main (void) {
     // }
 
     // process any incommming serial commands
+    // while(CDC_Device_BytesReceived(&VirtualSerial_CDC_Interface) > 0) {
+    //   if(readOrDumpBuffer(
+    //        (char)CDC_Device_ReceiveByte(&VirtualSerial_CDC_Interface),
+    //        &command_buffer)) {
+    //     if(strcmp("D", &command_buffer)) {
+    //       doorOpen();
+    //       fprintf(&USBSerialStream, "D:%s\r\n", &command_buffer);
+    //     } else if(strcmp("d", &command_buffer)) {
+    //       fprintf(&USBSerialStream, "d:%s\r\n", &command_buffer);
+    //       doorClose();
+    //     }
+
+    //     // no other commands implemented here
+    //   }
+    // }
+
+    // process any incomming serial commands (single bytes)
     while(CDC_Device_BytesReceived(&VirtualSerial_CDC_Interface) > 0) {
-      if(readOrDumpBuffer(
-           (char)CDC_Device_ReceiveByte(&VirtualSerial_CDC_Interface),
-           &command_buffer)) {
-        if(strcmp("D", &command_buffer)) {
-          // open door
-
-        }
-
-        // no other commands implemented here
+      char new_command = CDC_Device_ReceiveByte(&VirtualSerial_CDC_Interface);
+      switch(new_command) {
+        case 'D':
+          doorOpen();
+          break;
+        case 'd':
+          doorClose();
+          break;
+        default:
+          // ignore
+          break;
       }
     }
 
@@ -112,7 +139,7 @@ int main (void) {
       if(readOrDumpBuffer(
            (char)Serial_ReceiveByte(),
            &tag_buffer)) {
-        if(strlen(tag_buffer.buffer) == TAG_LENGTH) {
+        if(strlen(tag_buffer.buffer) == TAG_LENGTH && device_state == IDLE) {
           fputs("TAG|", &USBSerialStream);
           fputs(&tag_buffer, &USBSerialStream);
           fputs("\r\n", &USBSerialStream);
@@ -172,12 +199,24 @@ void setupHardware(void) {
   /* Disable clock division */
   clock_prescale_set(clock_div_1);
 
+  // port init
+  LEDDDR |= _BV(LEDPINN); //set up pin 0 on port B
+  LEDPORT |= _BV(LEDPINN);
+
+  RFIDEN_DDR |= _BV(RFIDEN_PINN); // pull RFID enable pin low
+  RFIDEN_PORT &= ~_BV(RFIDEN_PINN);
+
+  DOORCLOSE_DDR |= _BV(DOORCLOSE_PINN); // pull relay close side low
+  DOORCLOSE_PORT &= ~_BV(DOORCLOSE_PINN);
+
+  DOOROPEN_DDR |= _BV(DOOROPEN_PINN); // pull relay open side low
+  DOOROPEN_PORT &= ~_BV(DOOROPEN_PINN);
+
+  // system time setup
   initSystemTime();
 
-  // start hw serial
+  // start serial interfaces
   Serial_Init(RFID_UART_BAUD, false);
-
-  // start virtual serial
   USB_Init();
 }
 
@@ -197,6 +236,36 @@ void initSystemTime() {
   TCCR0B |= _BV(CS01) | _BV(CS00);
   TIMSK0 |= _BV(OCIE0A);
   OCR0A = 250;
+}
+
+
+void doorOpen() {
+  // set device state/timer
+  device_state = OPEN;
+  system_timer = 0;
+
+  // disable keypad (also displays green)
+  RFIDEN_PORT |= _BV(RFIDEN_PINN);
+
+  // toggle relay open pin
+  DOOROPEN_PORT |= _BV(DOOROPEN_PINN);
+  _delay_ms(50);
+  DOOROPEN_PORT &= ~_BV(DOOROPEN_PINN);
+}
+
+
+void doorClose() {
+  // toggle relay close pin
+  DOORCLOSE_PORT |= _BV(DOORCLOSE_PINN);
+  _delay_ms(50);
+  DOORCLOSE_PORT &= ~_BV(DOORCLOSE_PINN);
+
+  // reenable keypad
+  RFIDEN_PORT &= ~_BV(RFIDEN_PINN);
+
+  // and assume device state/timer
+  device_state = IDLE;
+  system_timer = 0;
 }
 
 

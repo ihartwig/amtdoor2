@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# put in /etc/cron.hourly
+#
+# updates list of valid rfids
+#
+cd /home/davr
+date >> getrfids.log
+php getrfids.php >> getrfids.log 2>&1

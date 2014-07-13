@@ -1,12 +1,17 @@
 #! /bin/sh
+#
+# copy to:
 # /etc/init.d/door_test
 #
+
+DOOR_TEST_DIR=/home/pi/repos/amtdoor2/authCode
 
 # Carry out specific functions when asked to by the system
 case "$1" in
   start)
     echo "Starting door_test.py..."
-    python /home/pi/repos/amtdoor2/authCode/door_test.py &
+    cd DOOR_TEST_DIR
+    python door_test.py > door_test.log &
     echo "done."
     ;;
   stop)

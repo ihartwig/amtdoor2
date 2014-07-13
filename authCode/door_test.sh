@@ -10,7 +10,7 @@ DOOR_TEST_DIR=/home/pi/repos/amtdoor2/authCode
 case "$1" in
   start)
     echo "Starting door_test.py..."
-    cd DOOR_TEST_DIR
+    cd $DOOR_TEST_DIR
     python door_test.py > door_test.log &
     echo "done."
     ;;

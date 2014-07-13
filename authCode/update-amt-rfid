@@ -4,6 +4,6 @@
 #
 # updates list of valid rfids
 #
-cd /home/davr
+cd /home/pi/repos/amtdoor2/authCode
 date >> getrfids.log
 php getrfids.php >> getrfids.log 2>&1

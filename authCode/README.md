@@ -24,3 +24,11 @@ check.py is a utility to look for syntax errors in a python script
 door_force_open.py will force the door to open in emergencies 
 (can only run if door_test.py is NOT running, since it talks to the arduino)
 
+
+Setup:
+chmod 755 door_test.sh
+sudo cp ./door_test.sh /etc/init.d/door_test
+sudo update-rc.d door_test defaults
+sudo cp update-amt-rfid /etc/cron.hourly/
+
+or run ./setup.sh

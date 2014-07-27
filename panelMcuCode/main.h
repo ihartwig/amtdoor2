@@ -49,7 +49,7 @@
 
 #define DOOR_CLOSE_TIME_MS 10000
 #define DOOR_OPEN_TIME_MS 10000
-#define DOOR_RELAY_PULSE_MS 140
+#define DOOR_RELAY_PULSE_MS 50
 
 
 /* Data Structures */

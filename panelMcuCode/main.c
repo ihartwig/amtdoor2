@@ -63,60 +63,19 @@ int main (void) {
   // start state machine
   device_state = IDLE;
 
-  // debug init
-  DDRD |= _BV(6);
   last_system_timer = 0;
 
   while (1) {
 
-    // debug
-    // if(system_timer < 1000) {
-    //   last_system_timer = 0;
-    // }
-    // if(system_timer + 1000 >= last_system_timer) {
-    //   fprintf(&USBSerialStream, "state: %d, timer: %dms\r\n", (int)device_state, system_timer);
-    //   if(system_timer < 60000) {
-    //     last_system_timer += 1000;
-    //   } else {
-    //     system_timer = 0;
-    //   }
-    // }
-
     // periodically send a close door pulse in idle
-    if(device_state == IDLE && system_timer >= DOOR_CLOSE_PULSE_TIME) {
+    if(device_state == IDLE && system_timer >= DOOR_CLOSE_TIME_MS) {
       doorClose();
     }
 
     // after open timeout, go back to idle state
-    if(device_state == OPEN && system_timer >= DOOR_OPEN_TIME) {
+    if(device_state == OPEN && system_timer >= DOOR_OPEN_TIME_MS) {
       doorClose();
     }
-
-    // echo command string
-    // while(CDC_Device_BytesReceived(&VirtualSerial_CDC_Interface) > 0) {
-    //   if(readOrDumpBuffer(
-    //        (char)CDC_Device_ReceiveByte(&VirtualSerial_CDC_Interface),
-    //        &command_buffer)) {
-    //     fputs(&command_buffer, &USBSerialStream);
-    //   }
-    // }
-
-    // process any incommming serial commands
-    // while(CDC_Device_BytesReceived(&VirtualSerial_CDC_Interface) > 0) {
-    //   if(readOrDumpBuffer(
-    //        (char)CDC_Device_ReceiveByte(&VirtualSerial_CDC_Interface),
-    //        &command_buffer)) {
-    //     if(strcmp("D", &command_buffer)) {
-    //       doorOpen();
-    //       fprintf(&USBSerialStream, "D:%s\r\n", &command_buffer);
-    //     } else if(strcmp("d", &command_buffer)) {
-    //       fprintf(&USBSerialStream, "d:%s\r\n", &command_buffer);
-    //       doorClose();
-    //     }
-
-    //     // no other commands implemented here
-    //   }
-    // }
 
     // process any incomming serial commands (single bytes)
     while(CDC_Device_BytesReceived(&VirtualSerial_CDC_Interface) > 0) {
@@ -212,6 +171,9 @@ void setupHardware(void) {
   DOOROPEN_DDR |= _BV(DOOROPEN_PINN); // pull relay open side low
   DOOROPEN_PORT &= ~_BV(DOOROPEN_PINN);
 
+  DEBUG_DDR |= _BV(DEBUG_PINN_ALL); // pull all debug pins low
+  DEBUG_PORT &= ~_BV(DEBUG_PINN_ALL);
+
   // system time setup
   initSystemTime();
 
@@ -249,7 +211,7 @@ void doorOpen() {
 
   // toggle relay open pin
   DOOROPEN_PORT |= _BV(DOOROPEN_PINN);
-  _delay_ms(50);
+  _delay_ms(DOOR_RELAY_PULSE_MS);
   DOOROPEN_PORT &= ~_BV(DOOROPEN_PINN);
 }
 
@@ -257,7 +219,7 @@ void doorOpen() {
 void doorClose() {
   // toggle relay close pin
   DOORCLOSE_PORT |= _BV(DOORCLOSE_PINN);
-  _delay_ms(50);
+  _delay_ms(DOOR_RELAY_PULSE_MS);
   DOORCLOSE_PORT &= ~_BV(DOORCLOSE_PINN);
 
   // reenable keypad
@@ -303,7 +265,5 @@ void EVENT_USB_Device_ControlRequest(void)
 
 ISR(TIMER0_COMPA_vect) {
   // figure out when the next compare should happen by doing a sine table lookup
-  PORTD |= _BV(6);
   system_timer++;
-  PORTD &= ~_BV(6);
 }

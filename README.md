@@ -1,9 +1,16 @@
 amtdoor2
 ========
 
+Included files:
+* authCode - code to run on a raspberry pi or similar auth server
+* housing - 2D drawings for assembly of the door tag reader
+* hwTestCode - simplified panel mcu code to test clock settings
+* panelMcuCode - firmware to run on the panel mcu that interprets RFID signals and accepts opening requests from the auth server
+* physical - Eagle schematic/boards for the panel mcu
 
-Using a 16u4:
 
+Setting up fuses (on a 16u4):
+```
 adafruit sets to: (E:C3, H:D0, L:FC) (avrdude-- has a typo)
 
 Extended (0 is set):
@@ -35,19 +42,24 @@ Low (0 is set):
   1 CKSEL2        Select Clock source
   0 CKSEL1        Select Clock source
 0 0 CKSEL0        Select Clock source
+```
 
-avrdude -p atmega16u4 -P usb -c avrispmkii -u -U lfuse:w:0xfc:m -U hfuse:w:0xd0:m -U efuse:w:0xc3:m
-avrdude -p atmega16u4 -P usb -c avrispmkii -U flash:w:BootloaderCDC_16u4.hex
+
 avrdude -p atmega16u4 -P usb -c avrispmkii -U flash:w:main.hex
 
 
-
-
-actually set to: -u -U lfuse:w:0xfc:m -U hfuse:w:0xf3:m -U efuse:w:0xf8:m
-
-avrdude -p atmega16u4 -P usb -c avrispmkii -U flash:w:main.hex -U lfuse:w:0xfc:m -U hfuse:w:0xf3:m -U efuse:w:0xf8:m
-
 to compile CDC bootloader (from lufa-lib trunk):
 for BOOTSZ1 = BOOTSZ0 = 0. see datasheet table 27-8.
-make MCU=atmega16u4 BOOT_START=0x1800 F_CPU=16000000
+```
+$ make MCU=atmega16u4 BOOT_START=0x1800 F_CPU=16000000
+$ mv BootloaderCDC.hex BootloaderCDC_16u4.hex
+$ avrdude -p atmega16u4 -P usb -c avrispmkii -U flash:w:BootloaderCDC_16u4.hex
+```
 
+
+to flash a new atmega16u4 for this code:
+```
+$ avrdude -p atmega16u4 -P usb -c avrispmkii -u -U lfuse:w:0xfc:m -U hfuse:w:0xd0:m -U efuse:w:0xc3:m
+$ make MCU=atmega16u4
+$ avrdude -p atmega16u4 -P usb -c avrispmkii -U flash:w:main.hex
+```

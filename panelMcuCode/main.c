@@ -159,8 +159,8 @@ void setupHardware(void) {
   clock_prescale_set(clock_div_1);
 
   // port init
-  LEDDDR |= _BV(LEDPINN); //set up pin 0 on port B
-  LEDPORT |= _BV(LEDPINN);
+  LEDDDR |= _BV(LEDPINN); //set up pin 0 on port B, off by default
+  LEDPORT &= ~_BV(LEDPINN);
 
   RFIDEN_DDR |= _BV(RFIDEN_PINN); // pull RFID enable pin low
   RFIDEN_PORT &= ~_BV(RFIDEN_PINN);

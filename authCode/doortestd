@@ -1,0 +1,28 @@
+#! /bin/sh
+#
+# copy to:
+# /etc/init.d/doortestd
+#
+
+DOOR_TEST_DIR=/home/pi/repos/amtdoor2/authCode
+
+# Carry out specific functions when asked to by the system
+case "$1" in
+  start)
+    echo "Starting door_test.py..."
+    cd $DOOR_TEST_DIR
+    ./door_test.sh > door_test.log &
+    echo "done."
+    ;;
+  stop)
+    echo "Stopping door_test..."
+    pkill -f door_test.sh
+    echo "done."
+    ;;
+  *)
+    echo "Usage: /etc/init.d/door_test {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0

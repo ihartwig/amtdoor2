@@ -1,7 +1,7 @@
 #! /bin/sh
 
-chmod 755 door_test.sh
-sudo cp ./door_test.sh /etc/init.d/door_test
-sudo update-rc.d door_test defaults
+chmod 755 doortestd
+sudo cp ./doortestd /etc/init.d/doortestd
+sudo update-rc.d doortestd defaults
 sudo cp update-amt-rfid /etc/cron.hourly/
 echo "Setup complete."

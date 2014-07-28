@@ -28,7 +28,14 @@ All of the above are also sent via http to our server for logging.
 
 `setup.sh` provisions the system to act as an authentication server for our door by setting up the startup and cron jobs. This can be done manually like this:
 ```
-$ sudo cp ./door_test.sh /etc/init.d/door_test
+$ sudo cp ./doortestd /etc/init.d/doortestd
 $ sudo update-rc.d door_test defaults
 $ sudo cp update-amt-rfid /etc/cron.hourly/
 ```
+Will likely need to be call as su/sudo.
+
+The system can be unprovisioned with:
+```
+$ sudo update-rc.d doortestd remove
+$ sudo rm /etc/init.d/door_test
+$ sudo rm /etc/cron.hourly/update-amt-rfid

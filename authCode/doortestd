@@ -11,7 +11,7 @@ case "$1" in
   start)
     echo "Starting door_test.py..."
     cd $DOOR_TEST_DIR
-    ./door_test.sh &> door_test.log
+    ./door_test.sh 2>&1 > door_test.log &
     echo "done."
     ;;
   stop)

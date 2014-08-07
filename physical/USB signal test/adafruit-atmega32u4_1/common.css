@@ -1,0 +1,127 @@
+span.tableheadercell
+{
+  display:table-cell;
+  background:color:#AAA;
+  font-weight:bold;
+  font-style:normal;
+  text-align:center;  
+  padding:2pt;  
+}
+
+.header
+{
+  background-color:#AAA;
+  font-weight:bold;
+}
+
+.warning
+{
+  color:black;
+  background-color:yellow;
+  font-weight:bold;
+}
+.critical
+{
+  background-color:red;  
+  font-weight:bold;
+}
+.good
+{
+}
+
+.odd
+{
+
+}
+
+.odd_underline  
+{  
+  border-bottom: thin solid #333;
+}
+
+.even_underline 
+{
+  background-color:#AAA;
+  border-bottom: thin solid #333;
+}
+
+.even
+{
+  background-color:#AAA;
+}
+
+span.tablecell
+{
+  display:table-cell;
+  background-color:white;
+  padding:2pt;
+  font-weight:bold;
+}
+
+span.zoom-tablecell
+{
+  display:table-cell;
+  background-color:white;
+  padding:2pt, 3pt;
+  font-weight:bold;
+}
+
+span.activetablecell
+{
+  display:table-cell;
+  background-color:#AFF5F4;
+  padding:1pt;
+  font-weight:bold;
+  border: solid 1pt;
+  border-color:black;
+}
+span.tablerow
+{
+  display:table-row;
+}
+
+div.WorstTrialNum
+{
+  clear:left;
+  color:black;
+  display:block;
+  text-align:left;
+  font-size:8pt;
+  margin-top:0.0em;
+  width:100%
+}
+
+span.small-interactive-table-right
+{  
+  padding:1pt;
+  display:table;
+  border:solid 1pt;
+  border-color:#AAA;
+  text-align:center;
+  float:right;
+  font-style:italic;
+  background-color:#AAA;
+  width:80;
+  font-size:8pt;
+}
+
+A:link { color: #4C4C4C; text-decoration: underline; border-color: white;}
+A:Reverse{ color: white; text-decoration: underline; border-color: white;}
+A:visited { color: #4C4C4C; text-decoration: underline; }
+A:active { color: #4c4c4c; text-decoration: none; }
+A:bob {color:#D9117E; font-weight:bold;}
+A:hover {color:black; text-decoration:underline;background-color:#D0FEFD;border-color:black; }
+
+
+
+@media print
+{
+   span.zoom-tablecell
+   {
+      display:none;
+   }
+   table.interactive-table
+   {
+      display:none;
+   }
+}

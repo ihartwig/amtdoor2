@@ -1,0 +1,515 @@
+BODY
+{
+  padding: 1px;
+  margin-right:4px;
+  margin-left:4px;
+  margin-bottom:4px;
+  font-size:8pt;
+  line-height:1em;
+  counter-reset: FigureNum;
+}
+
+STRONG
+{
+   font-weight: bolder
+}
+
+h3.nospace
+{
+  font-size:8pt;
+  margin:0pt;
+  padding:0:
+}
+
+
+div.TESTHEADER
+{
+  border-width:1pt;
+  border-color:black;
+  border-style:solid;
+  background-color:black;
+  color:white;
+  clear: both;
+  margin-bottom:0px;
+
+}
+
+div.TESTHEADER span.left
+{
+  font-weight:bold;
+  text-align: left;
+  float:left;
+  width:49%;
+}
+
+
+div.TESTHEADER span.right
+{
+  font-style:italic;color:white;
+  float:right;
+  text-align: right;
+
+  width:49%;
+  font-size:8pt
+}
+
+div.summaryrow
+{ 
+ text-align: left; 
+}
+
+div.FieldValueRow
+{
+  margin-left:10px;
+  margin-bottom:5px;
+  font-size:8pt;
+  background-color:white;
+}
+
+.TrialSummaryRow
+{
+  font-style:italic;
+  color:blue;
+}
+
+span.Field
+{
+  padding-left:4px;
+  padding-right:4px;
+  padding-top:2px;
+  padding-bottom:2px;
+  width:auto;
+  background-color:#AAA;
+  color:black;
+  font-weight:bold;
+  font-size:8pt;
+  /*height:100%;*/
+  /*width:100px;*/
+}
+
+.TestConfigDetailsTable
+{
+   font-size:8pt;
+   clear:both;
+}
+
+.MarginThresholdsTable
+{
+   font-size:8pt;
+   text-align:right;
+}
+
+.OverallSummaryTable
+{
+   font-size:8pt;
+}
+
+.TrialSummaryTable
+{
+   border:1px black solid;
+   margin-left:2em;
+   margin-bottom:.5em;
+   font-size:8pt;
+
+}
+
+span.FigureCaption:before
+{
+   /*content: "Figure " counter(FigureNum);*/
+}
+
+.ImageTable
+{
+  display:inline-block;
+  width:auto;
+  /*border: 1px dotted black;*/
+  border: none;
+  margin: 2px;
+  orphans:2;
+  widows:2;
+}
+
+.ImageTableRow
+{
+  /*display:table-row;*/
+  display:block;
+}
+
+.ImageTableCell
+{
+/*
+  display:table-cell;
+  color:red;
+  */
+}
+
+.ImageCaption
+{
+/*
+  display:table-caption;
+  caption-side:top;
+  */
+  border: 1px solid black;
+  padding-left:0.5em;
+  font-size:8pt;
+  width:256;
+}
+
+.FigureCaption
+{
+
+  /*clear:both; */
+  /*counter-increment: FigureNum;*/
+  padding-left:4px;
+  padding-right:4px;
+  font-weight:bold;
+  font-size:8pt;
+  background-color:#AAA;
+  text-align:center;
+  /*border: solid 1pt;*/
+
+}
+
+img.scopegrat
+{
+}
+
+img.HighlightMaskHits
+{   
+   width:256;
+   height:132;
+/*
+oObj.filters.item(0).M11 *= flMultiplier;
+    oObj.filters.item(0).M12 *= flMultiplier;
+    oObj.filters.item(0).M21 *= flMultiplier;
+    oObj.filters.item(0).M22 *= flMultiplier;
+
+          progid:DXImageTransform.Microsoft.dropshadow(OffX=5, OffY=5, Color='red', Positive='true')
+          progid:DXImageTransform.Microsoft.BasicImage(mask=1, MaskColor=0X00)
+          progid:DXImageTransform.Microsoft.Glow(Color=red,Strength=5);
+          progid:DXImageTransform.Microsoft.Blur(pixelradius=1.1);
+          progid:DXImageTransform.Microsoft.MotionBlur(strength=13, direction=310)
+          progid:DXImageTransform.Microsoft.BasicImage(mask=1, maskColor=0X0000ff);
+          */
+}
+img.BigHighlightMaskHits
+{   
+}
+
+img.bigscopegrat
+{
+   
+}
+
+span.image
+{
+   background-color:red;
+}
+div.References
+{
+   margin-left:20px;
+}
+span.FixedField
+{
+    background-color:#AAAAAA;
+    width:150;
+    font-size:8pt;
+}
+
+span.Value
+{
+   padding-left:4px;
+   padding-right:4px;
+   /*
+   margin-left:4px;
+   margin-bottom:4px;
+   */
+   font-size:8pt;
+}
+
+span.Pass
+{
+   color:white;
+   background-color:green;
+   padding-left:4px;
+   padding-right:4px;
+   vertical-align:top;
+}
+
+span.TestSummary
+{
+   z-index:1;
+   margin-top:0;
+  margin-left:-7pt;
+   border-style:solid;
+   border-color:black;
+   border-width:1pt;
+   padding-left:2pt;
+   padding-right:2pt;
+   background-color:black;
+   color:white;
+   /*width:150px;*/
+   vertical-align:top;
+   display:inline-block;
+   font-size:7pt;
+   /*margin:1pt 0pt 0pt -7pt;*/
+}
+
+span.ReferenceDividerSpan
+{
+   display:none;
+   border-style:solid;
+   border-color:black;
+   border-width:1pt;
+   padding-left:4px;
+   padding-right:4px;
+   background-color:black;
+   color:white;
+   width:150px;
+}
+
+div.ReferenceDivider
+{
+   display:none;
+   /*margin-left:10px;*/
+   margin-bottom:0pt;
+   font-size:8pt;
+}
+
+span.Fail
+{
+   color:white;
+   background-color:red;
+   font-weight:bold;
+   padding-left:2pt;
+   padding-right:2pt;
+   /*float:right;*/
+   vertical-align:top;
+
+}
+
+div.FieldValueBlock
+{
+  /*float:left;*/
+  border:solid 1pt;
+  width:auto;
+  margin:4px;
+  font-size:8pt;
+  max-height:1em;
+}
+
+span.FieldValueBlock
+{
+  display:inline-block;
+  vertical-align:top;
+  border:solid 1pt;
+  margin:2pt, 2pt;
+  font-size:8pt;
+}
+
+span.NewFieldValueBlock
+{
+/* fieldValue block with a newline before */
+  display:inline-block;
+  vertical-align:top;
+  float:left;
+  border:solid 1pt;
+  margin:2pt, 2pt;
+  font-size:8pt;
+}
+
+
+span.TestDescription
+{
+  clear:both;
+  border: 1px dotted #333;
+
+  padding:2px;
+  padding-left:1em;
+  font-size:7pt;
+  width:100%;
+  background-color:#F5F4AF;
+}
+
+div.TestSummary
+{
+  font-size:8pt;
+  text-align:left;
+  float:left;
+
+
+  /*background-color:#AAA;*/
+  /*border: solid 1pt;*/
+  margin-left:10px;
+  margin-bottom:2px;
+  /*padding:2pt;*/
+}
+
+div.spacer
+{
+   clear: both;
+}
+
+div.summaryrow span
+{
+}
+
+span.passfail
+{
+ vertical-align: top;
+ text-align: left;
+ width:45px
+}
+
+div.summaryrow span.floatleft
+{
+}
+
+div.testname
+{
+  font-weight:bold;
+  text-align: left;
+  /*float:left;*/
+  vertical-align:top;
+  width:49%;
+  padding:0px;
+  display:inline-block;
+}
+
+span.SpecReference
+{
+  font-style:italic;color:white;
+  display:inline-block;
+  text-align:right;
+  font-size:8pt;
+  margin-top:0.0em;
+  width:100%
+}
+.boldwarning
+{
+  font-weight:bold;
+  color:red;
+}
+
+.floatleft
+{
+  float:left;
+}
+
+.floatright
+{
+  float:right;
+  text-align:right;
+}
+
+div.row span.left
+{
+  float: left;
+  text-align: left;
+  font-weight: bold;
+  color: #fff;
+  width: 49%;
+}
+
+div.row span.right
+{
+  float: right;
+  text-align: right;
+  font-weight: bold;
+  color: #fff;
+  width: 49%;
+}
+
+  H1 {font-size:14pt}
+  H2 {font-size:12pt}
+  H4 {font-size:9pt}
+  H5 {font-size:8pt}
+  H6 {font-size:8pt}
+  
+span.TableCaption  
+  {
+   font-size:10pt;
+     padding-left:4px;
+     padding-right:4px;
+     padding-top:2px;
+     padding-bottom:2px;
+     width:auto;     
+     color:black;
+     font-weight:bold;
+     font-size:8pt;
+     font-weight:bold;
+     /*height:100%;*/
+     /*width:100px;*/
+   }
+   
+@media print {  
+  H1 {font-size:14pt}
+  H2 {font-size:14pt}
+  H4 {font-size:10pt}
+  H5 {font-size:8pt}
+  H6 {font-size:8pt}
+  BLOCKQUOTE,
+  PRE           { page-break-inside: avoid }
+  UL, OL, DL    { page-break-before: avoid }
+
+img.scopegrat
+{
+   /*width:512;
+   height:264;*/
+   width:6.0in;
+   height:3.375in;
+}
+div.TESTHEADER
+{
+page-break-before:auto;
+  border-width:2pt;
+  border-color:black;
+  border-style:solid;
+  background-color:black;
+  color:black;
+  clear: both;
+  margin-bottom:4px;
+
+}
+
+span.ClearIfCompact
+{
+   width:50px;
+   background-color:blue;
+   clear:both;
+}
+
+span.TestSummary
+{
+   z-index:1;
+   margin-top:0;
+  margin-left:-7pt;
+   border-style:solid;
+   border-color:black;
+   border-width:1pt;
+   padding-left:2pt;
+   padding-right:2pt;
+   vertical-align:top;
+   display:inline-block;
+   font-size:7pt;
+
+   background-color:white;
+   color:black;
+   vertical-align:top;
+}
+
+span.ReferenceDividerSpan
+{
+
+   display:none;
+   margin:0;
+}
+
+  div.ReferenceDivider
+  {
+      display:none;
+  }
+  
+  
+}
+

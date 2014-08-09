@@ -1,10 +1,4 @@
 #include "main.h"
-/**
- * IDLE (non blocking) -> Wait for new serial data ->
- * VERIFYING (non blocking) -> Should get a door command? ->
- * OPEN (blocking) -> Open relay, disable reader, set 10s timer.
- * When in other states, pulse close signal every 10s.
- **/
 
 /** LUFA CDC Class driver interface configuration and state information. This structure is
  *  passed to all CDC Class driver functions, so that multiple instances of the same class
@@ -45,6 +39,8 @@ static FILE USBSerialStream;
 char_buffer_t command_buffer;
 char_buffer_t tag_buffer;
 device_state_t device_state;
+doorsense_state_t doorsense_current;
+doorsense_state_t doorsense_last;
 volatile uint16_t system_timer; // 1ms resolution, loops at 2^16=65536ms
 uint16_t last_system_timer;
 
@@ -62,18 +58,45 @@ int main (void) {
 
   // start state machine
   device_state = IDLE;
+  // default to OPEN door; could also mean no sensor
+  doorsense_last = OPEN;
+  doorsense_current = OPEN;
 
   last_system_timer = 0;
 
   while (1) {
+    // update door sense
+    doorsense_last = doorsense_current;
+    if(DOORSENSE_PIN & _BV(DOORSENSE_PINN)) {
+      /**
+       * Because input is pulled up + NO switch, we expect to see a high signal
+       * when door is open or when no sensor is available.
+       */
+      doorsense_current = OPEN;
+    } else {
+      doorsense_current = CLOSED;
+    }
+    // LED reflects door state; open=on
+    if(doorsense_current == OPEN) {
+      LEDPORT |= _BV(LEDPINN);
+    } else {
+      LEDPORT &= ~_BV(LEDPINN);
+    }
 
     // periodically send a close door pulse in idle
     if(device_state == IDLE && system_timer >= DOOR_CLOSE_TIME_MS) {
       doorClose();
     }
 
+    // during timeout, lock door if we see OPEN->CLOSE doorsense
+    if(device_state == UNLOCKED &&
+       doorsense_last == OPEN &&
+       doorsense_current == CLOSED) {
+      doorClose();
+    }
+
     // after open timeout, go back to idle state
-    if(device_state == OPEN && system_timer >= DOOR_OPEN_TIME_MS) {
+    if(device_state == UNLOCKED && system_timer >= DOOR_OPEN_TIME_MS) {
       doorClose();
     }
 
@@ -171,8 +194,11 @@ void setupHardware(void) {
   DOOROPEN_DDR |= _BV(DOOROPEN_PINN); // pull relay open side low
   DOOROPEN_PORT &= ~_BV(DOOROPEN_PINN);
 
-  DEBUG_DDR |= _BV(DEBUG_PINN_ALL); // pull all debug pins low
-  DEBUG_PORT &= ~_BV(DEBUG_PINN_ALL);
+  DOORSENSE_DDR &= ~_BV(DOORSENSE_PINN); // input with pull up
+  DOORSENSE_PORT |= _BV(DOORSENSE_PINN);
+
+  DEBUG_DDR |= DEBUG_PINN_ALL; // pull all debug pins low
+  DEBUG_PORT &= ~DEBUG_PINN_ALL;
 
   // system time setup
   initSystemTime();
@@ -203,7 +229,7 @@ void initSystemTime() {
 
 void doorOpen() {
   // set device state/timer
-  device_state = OPEN;
+  device_state = UNLOCKED;
   system_timer = 0;
 
   // disable keypad (also displays green)

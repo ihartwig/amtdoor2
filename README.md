@@ -1,7 +1,7 @@
 amtdoor2
 ========
 
-This repository tracks files for AMT Door 2, and RFID based lock system in use at the [Ace Monster Toys](http://acemonstertoys.org/) hackspace in Oakland, CA. A complete description of the system these files are part of, [see the description on the AMT Wiki](http://wiki.acemonstertoys.org/Door#AMT_Door_2).
+This repository tracks files for AMT Door 2, an RFID based lock system in use at the [Ace Monster Toys](http://acemonstertoys.org/) hackspace in Oakland, CA. A complete description of the system these files are part of, [see the description on the AMT Wiki](http://wiki.acemonstertoys.org/Door#AMT_Door_2).
 
 Included files:
 * authCode - code to run on a raspberry pi or similar auth server

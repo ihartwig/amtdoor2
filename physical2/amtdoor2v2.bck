@@ -1,0 +1,11 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP Adj_Shunt_Regulator
+D Adjustable Precision Shunt Regulator
+$ENDCMP
+#
+$CMP D_Bridge
+D Diode
+$ENDCMP
+#
+#End Doc Library

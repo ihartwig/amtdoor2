@@ -8,4 +8,22 @@ $CMP D_Bridge
 D Diode
 $ENDCMP
 #
+$CMP FDC2612
+D Transistor N-MOSFET (general)
+K nmos n-mos n-mosfet transistor
+$ENDCMP
+#
+$CMP OPTO-TRANSISTOR-2
+D Generic DC Dual Optocoupler
+K NPN DC Dual Optocoupler
+$ENDCMP
+#
+$CMP R_Small
+D Resistor
+$ENDCMP
+#
+$CMP SolderBridge
+D Resistor
+$ENDCMP
+#
 #End Doc Library

@@ -150,18 +150,29 @@ void initBuffer(char_buffer_t *buffer) {
   Serial buffer control function.
   Attempt to read available characters into the buffer until either the buffer
   is full or a new line is reached. Omits newline, but adds null terminator.
+  Skips empty lines with no data between newlines.
   Return: true if complete line available.
 **/
 bool readOrDumpBuffer(char new_char, char_buffer_t *buffer) {
   // fprintf(&USBSerialStream, "char:%c,pos:%d\r\n", new_char, buffer->pos);
-  if(new_char == '\r') {
-    // ignore
-    return false;
-  } else if(new_char == '\n') {
-    buffer->buffer[buffer->pos] = '\0';
-    buffer->pos = 0;
-    return true;
-  } else {
+  if(new_char == '\n' || new_char == '\r') {
+    // ignore spurious newlines from /r/n or /n/r
+    if(buffer->pos == 0) {
+      return false;
+    }
+    else {
+      // also drop the last character if it was part of /r/n or /n/r
+      char last_char = buffer->buffer[buffer->pos-1];
+      if(last_char == '\n' || last_char == '\r') {
+        buffer->pos--;
+      }
+      // null terminate the buffer
+      buffer->buffer[buffer->pos] = '\0';
+      buffer->pos = 0;
+      return true;
+    }
+  }
+  else {
     if(buffer->pos + 1 >= buffer->size) {
       // if no space for null terminator, this buffer is full.
       buffer->pos = 0;

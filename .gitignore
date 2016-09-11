@@ -12,3 +12,7 @@
 *.map
 *.o
 *.sym
+
+# Mac OS
+.DS_Store
+

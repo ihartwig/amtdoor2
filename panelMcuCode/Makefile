@@ -48,11 +48,11 @@ AVRDUDE = avrdude
 # Type: avrdude -c ?
 # to get a full listing.
 #
-AVRDUDE_PROGRAMMER = avr109
+AVRDUDE_PROGRAMMER = stk500
 
 # com1 = serial port. Use lpt1 to connect to parallel port.
 # AVRDUDE_PORT = usb
-AVRDUDE_PORT = /dev/tty.usbserial-asdfasdf
+AVRDUDE_PORT = /dev/tty.usbmodem1411
 # programmer connected to serial device
 
 AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET).hex
@@ -81,7 +81,7 @@ AVRDUDE_FLAGS += $(AVRDUDE_VERBOSE)
 AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
 
 AVRDUDE_A_PORT = /dev/tty.asdf
-AVRDUDE_A_FLAGS = -F -v -c arduino -p $(MCU) -P $(AVRDUDE_A_PORT) -b 57600
+AVRDUDE_A_FLAGS = -F -v -c arduino -p $(MCU) -P $(AVRDUDE_A_PORT) -b 19200
 #---------------------------------------------------------------
 
 
